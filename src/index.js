@@ -18,12 +18,28 @@ function getShowings(){
 }
 
 function buyTicketForMovie(){
-    console.log(currentShowing);
+    console.log(currentShowing.id);
     console.log(currentShowing.capacity);
     console.log(currentShowing.tickets_sold);
+    
+    fetch(`https://evening-plateau-54365.herokuapp.com/tickets`,{
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            showing_id: currentShowing.id
+        })
+    })
+    .then(resp => resp.json())
+    .then(data => {
+        console.log(data)});
+        console.log(currentShowing);
 }
 
 function createCards(showing){
+    console.log(showing);
     let card = document.createElement('div');
         card.className = "card";
             let divContent = document.createElement('div');
