@@ -1,5 +1,6 @@
 const theatreId = 561; //assigned Id
 const cardShowing = document.getElementsByClassName('ui cards showings')[0];
+let currentShowing = null;
 
 document.addEventListener('DOMContentLoaded',function(){
     console.log('loaded')
@@ -7,13 +8,19 @@ document.addEventListener('DOMContentLoaded',function(){
 })
 function getShowings(){
     fetch(`https://evening-plateau-54365.herokuapp.com/theatres/${theatreId}`)
-.then(resp => resp.json())
-.then(data => {
-    console.log(data.showings);// showings
-    data.showings.forEach(showing => {
-        createCards(showing);
+    .then(resp => resp.json())
+    .then(data => {
+    //console.log(data.showings);// showings
+        data.showings.forEach(showing => {
+            createCards(showing);
+        })
     })
-})
+}
+
+function buyTicketForMovie(){
+    console.log(currentShowing);
+    console.log(currentShowing.capacity);
+    console.log(currentShowing.tickets_sold);
 }
 
 function createCards(showing){
@@ -32,12 +39,23 @@ function createCards(showing){
                     let spanShowtime = document.createElement('span');
                     spanShowtime.className = "ui label";
                     spanShowtime.innerText = showing.showtime;
+                    let spanCapacity = document.createElement('span');
+                    spanCapacity.innerText = `Capacity: ${showing.capacity}`;
                 divDescription.appendChild(spanShowtime);
-                divDescription.innerHTML += `Capacity: ${showing.capacity}`;
+                //divDescription.innerHTML += `Capacity: ${showing.capacity}`;
+                divDescription.appendChild(spanCapacity);
                 let divExtraContent = document.createElement('div');
                     let buyTicket = document.createElement('div');
                     buyTicket.className = "ui blue button";
                     buyTicket.innerText = "Buy Ticket";
+                    buyTicket.addEventListener('click',function(){
+                        //deals with buy ticket button
+                        showing.capacity = parseInt(showing.capacity) - 1
+                        spanCapacity.innerText = `Capacity: ${showing.capacity}`
+                        currentShowing = showing; //stores instance of showing globally
+
+                        buyTicketForMovie();
+                    })
                 divExtraContent.appendChild(buyTicket);
             divContent.appendChild(divHeader);
             divContent.appendChild(divRuntime);
