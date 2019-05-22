@@ -64,20 +64,25 @@ function makeShowingCard(theatre){
 	}
 	// 
 	// debugger
+	console.log("RIGHT BEFORE BUYTIKET")
+	let spanTix = document.querySelector(`.tix-${buyTicketButton.dataset.showingID}`)
+		console.log(spanTix)
 	buyTicketButton.addEventListener("click", buyTicket)
 	
 }
 
 function buyTicket(){
+	let myShowingID = event.target.dataset.showingID 
 
- 	event.target.dataset.ticketsSold - 1
- 	event.target.dataset.showingID - 1 
+ 	event.target.dataset.ticketsSold = parseInt(event.target.dataset.ticketsSold) + 1
+ 	//this is why my likes wasn't working, needed parseint and increment up here
+ 	// event.target.dataset.capacity -= 1 
+
  	let myCapacity = event.target.dataset.capacity
 	let myTicketsSold = event.target.dataset.ticketsSold
-	let myShowingID = event.target.dataset.showingID 
-	
-	
-
+	let spanTix = document.querySelector(`.tix-${myShowingID}`)
+	console.log(spanTix)
+	// debugger
 
 	fetch(newTicketUrl, {
 		method: "POST",
@@ -92,11 +97,11 @@ function buyTicket(){
 		console.log("in fetch still", ticket)
 		// let buyTicketButton = document.querySelector(`#buy-${myShowingID}`)
 		let spanTix = document.querySelector(`.tix-${ticket.showing_id}`)
-		console.log(spanTix)
-		spanTix.innerText = ""
+		// console.log(spanTix)
+		// spanTix.innerText = ""
 		spanTix.innerText = myCapacity - myTicketsSold
-		console.log(spanTix)
-		// couldn't the likes to update on the dom without refreshing
+		// console.log(spanTix)
+				
 	})
 	
 	
