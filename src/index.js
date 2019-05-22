@@ -1,10 +1,10 @@
 const theatreId = 561; //assigned Id
 const cardShowing = document.getElementsByClassName('ui cards showings')[0];
-let currentShowing = null;
+let currentShowing = null; //set to specific movie info based on event listener
 
 document.addEventListener('DOMContentLoaded',function(){
     console.log('loaded')
-    getShowings();
+    getShowings(); //gets list of showings
 })
 function getShowings(){
     fetch(`https://evening-plateau-54365.herokuapp.com/theatres/${theatreId}`)
@@ -12,7 +12,7 @@ function getShowings(){
     .then(data => {
     //console.log(data.showings);// showings
         data.showings.forEach(showing => {
-            createCards(showing);
+            createCards(showing); //helper method
         })
     })
 }
@@ -32,11 +32,11 @@ function buyTicketForMovie(){
             showing_id: currentShowing.id
         })
     })
-    .then(resp => resp.json())
-    .then(data => {
-        // console.log(data)
-    });
-        // console.log(currentShowing);
+    // .then(resp => resp.json())
+    // .then(data => {
+    //     // console.log(data)
+    // }); //optimistic rendering?
+    //     // console.log(currentShowing);
 }
 
 function createCards(showing){
@@ -55,7 +55,9 @@ function createCards(showing){
                     let spanShowtime = document.createElement('span');
                     spanShowtime.className = "ui label";
                     spanShowtime.innerText = showing.showtime;
+                    //variable to keep track of remaining tickets
                     let remainingTickets = parseInt(showing.capacity) - parseInt(showing.tickets_sold);
+                    //extra element to dynamically render remaining tickets
                     let spanCapacity = document.createElement('span');
                     //spanCapacity.innerText = `Capacity: ${showing.capacity}`;
                     spanCapacity.innerText = `Remaining: ${remainingTickets}`;
@@ -65,7 +67,7 @@ function createCards(showing){
                 let divExtraContent = document.createElement('div');
                     let buyTicket = document.createElement('div');
                     buyTicket.className = "ui blue button";
-                    if (showing.tickets_sold === showing.capacity){
+                    if (remainingTickets === 0){
                         buyTicket.style.backgroundColor= "red"; //provides sold out stlyling
                         buyTicket.innerText = "SOLD OUT";
                     }else{
@@ -82,7 +84,6 @@ function createCards(showing){
                             spanCapacity.innerText = `Remaining: ${remainingTickets}`
                             currentShowing = showing; //stores instance of showing globally
                         }
-                    
                         buyTicketForMovie();   
                     })
                 divExtraContent.appendChild(buyTicket);
