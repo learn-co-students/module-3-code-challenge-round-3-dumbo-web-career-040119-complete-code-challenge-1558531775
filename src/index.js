@@ -3,15 +3,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const theatreId = "569";
   const URL = "https://evening-plateau-54365.herokuapp.com/theatres/569";
 
+// FETCHING MOVIES
 
 fetch(URL)
 .then(response => response.json())
 .then(movies => movies.showings.forEach(SlapItOnTheDOM))
 
+// PRINTING MOVIES
+
 function SlapItOnTheDOM(movie) {
   const movieCont = document.querySelector('.cards')
   const movieCard = document.createElement('div')
-
   const movieTitle = movie.film.title
   const movieRuntime = movie.film.runtime
   const movieShowTime = movie.showtime
@@ -42,6 +44,7 @@ function SlapItOnTheDOM(movie) {
   // document.querySelectorAll('.ui blue button').forEach(button => console.log(button))
 }
 
+// BUYING TICKETS
 function buyIt (event, movie) {
   const capacity = movie.capacity
   const tickets_sold = parseInt(movie.tickets_sold + 1)
