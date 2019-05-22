@@ -86,6 +86,9 @@ function sellTicket(event, card, showing) {
   }).then(res => res.json())
   .then(ticket => {
     showing.tickets_sold += 1
+    if (showing.tickets_sold == showing.capacity) {
+      alert("Congrats lucky duck! You got the last ticket!")
+    }
     updateShowing(card, showing)
   });
 };
