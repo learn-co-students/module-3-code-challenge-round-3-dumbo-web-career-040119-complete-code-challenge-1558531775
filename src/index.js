@@ -18,9 +18,9 @@ function getShowings(){
 }
 
 function buyTicketForMovie(){
-    console.log(currentShowing.id);
-    console.log(currentShowing.capacity);
-    console.log(currentShowing.tickets_sold);
+    // console.log(currentShowing.id);
+    // console.log(currentShowing.capacity);
+    // console.log(currentShowing.tickets_sold);
     
     fetch(`https://evening-plateau-54365.herokuapp.com/tickets`,{
         method: "POST",
@@ -34,12 +34,12 @@ function buyTicketForMovie(){
     })
     .then(resp => resp.json())
     .then(data => {
-        console.log(data)});
-        console.log(currentShowing);
+        // console.log(data)
+    });
+        // console.log(currentShowing);
 }
 
 function createCards(showing){
-    console.log(showing);
     let card = document.createElement('div');
         card.className = "card";
             let divContent = document.createElement('div');
@@ -55,22 +55,35 @@ function createCards(showing){
                     let spanShowtime = document.createElement('span');
                     spanShowtime.className = "ui label";
                     spanShowtime.innerText = showing.showtime;
+                    let remainingTickets = parseInt(showing.capacity) - parseInt(showing.tickets_sold);
                     let spanCapacity = document.createElement('span');
-                    spanCapacity.innerText = `Capacity: ${showing.capacity}`;
+                    //spanCapacity.innerText = `Capacity: ${showing.capacity}`;
+                    spanCapacity.innerText = `Remaining: ${remainingTickets}`;
                 divDescription.appendChild(spanShowtime);
                 //divDescription.innerHTML += `Capacity: ${showing.capacity}`;
                 divDescription.appendChild(spanCapacity);
                 let divExtraContent = document.createElement('div');
                     let buyTicket = document.createElement('div');
                     buyTicket.className = "ui blue button";
-                    buyTicket.innerText = "Buy Ticket";
+                    if (showing.tickets_sold === showing.capacity){
+                        buyTicket.style.backgroundColor= "red"; //provides sold out stlyling
+                        buyTicket.innerText = "SOLD OUT";
+                    }else{
+                        buyTicket.innerText = "Buy Ticket";
+                    }
                     buyTicket.addEventListener('click',function(){
                         //deals with buy ticket button
-                        showing.capacity = parseInt(showing.capacity) - 1
-                        spanCapacity.innerText = `Capacity: ${showing.capacity}`
-                        currentShowing = showing; //stores instance of showing globally
-
-                        buyTicketForMovie();
+                        //check balance of remaining tickets whether possible to buy or not
+                        if (remainingTickets === 0){
+                            buyTicket.style.backgroundColor= "red";
+                            buyTicket.innerText = "SOLD OUT";
+                        }else{
+                            remainingTickets = remainingTickets - 1
+                            spanCapacity.innerText = `Remaining: ${remainingTickets}`
+                            currentShowing = showing; //stores instance of showing globally
+                        }
+                    
+                        buyTicketForMovie();   
                     })
                 divExtraContent.appendChild(buyTicket);
             divContent.appendChild(divHeader);
