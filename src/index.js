@@ -1,13 +1,21 @@
+/////////////////////////////////////////
+//Global Contstants
+////////////////////////////////////////
 const url = `https://evening-plateau-54365.herokuapp.com/theatres/559/`
 const theatreId = 559;
 const ticketURL = `https://evening-plateau-54365.herokuapp.com/tickets`
 
+/////////////////////////////////////////
+//Fetches All Movie Showings From API
+////////////////////////////////////////
 function loadMovies(){
   fetch(url)
   .then(res => res.json())
   .then(data => data.showings.forEach(showMovieCard))
 
-
+/////////////////////////////////////////
+//Creates A Single Movie Card From API  
+////////////////////////////////////////
 function showMovieCard(movie){
   const cardDiv = document.querySelector(".showings")
   const ticketsRemaining = movie.capacity - movie.tickets_sold
@@ -48,6 +56,9 @@ function showMovieCard(movie){
   })
 }}
 
+/////////////////////////////////////////
+//Posts To API to Buy A Ticket
+////////////////////////////////////////
 function purchaseTicket(movie){
 
   fetch(ticketURL,{
@@ -68,22 +79,28 @@ function purchaseTicket(movie){
   })
 }
 
+/////////////////////////////////////////
+//Disables Buy Button After A Purchase
+////////////////////////////////////////
 function soldOut(movie) {
   const buyButton = document.getElementById(`${movie.id}`)
   buyButton.className = ""
   buyButton.innerHTML = `<p>Sold Out</p>`
 }
 
+/////////////////////////////////////////
+//Updates Remaining Tickets After Purchase
+////////////////////////////////////////
 function ticketUpdater(movie){
   const span = document.querySelector(`.movie-${movie.id}`)
 
-  let ticketCount = span.innerText
-  console.log(ticketCount)
-
+  let ticketCount = span.innerTex
   span.innerText = ticketCount -1
 }
 
-
+/////////////////////////////////////////
+//Loads Content After DOM is Loaded
+////////////////////////////////////////
 document.addEventListener("DOMContentLoaded", ()=>{
   loadMovies()
 })
