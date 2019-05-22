@@ -16,7 +16,6 @@ function putShowingsOnDom(showing) {
   card.className = 'card';
 
   createContentHTML(card, showing);
-
   body.appendChild(card);
 };
 
@@ -34,7 +33,6 @@ function createContentHTML(card, showing) {
     </div>`;
 
   card.appendChild(content);
-
   createExtraDiv(card, showing);
 };
 
@@ -49,7 +47,6 @@ function createExtraDiv(card, showing) {
   </div>`;
 
   checkForTickets(div, card, showing);
-
   card.appendChild(div);
 };
 
