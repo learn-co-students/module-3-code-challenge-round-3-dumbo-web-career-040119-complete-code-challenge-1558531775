@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function(){
-  const theatreId = 564;
-  const GET_URL = 'https://evening-plateau-54365.herokuapp.com/theatres/564'
+  const theatreId = 581;
+  const GET_URL = 'https://evening-plateau-54365.herokuapp.com/theatres/581'
   const showingsList = document.querySelector('.showings')
 
 
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const remaining = capacity - sold
 
     newCard.innerHTML =
-    ` <div class="content">
+    ` <div class="content" id=card-showing-id-${showing.id}>
         <div class="header">
           ${showing.film.title}
         </div>
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function(){
             ${showing.showtime}
           </span>
 
-          <span id='remaining'>${remaining} remaining tickets
+          <span id='showing-id-${showing.id}'>${remaining} remaining tickets
         </div>
       </div>`
 
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
       const buyBtn = document.createElement('div')
       buyBtn.innerHTML = `
-      <div class="extra content">
+      <div class="extra content" id=extra-showing-id-${showing.id}>
         <div class="ui blue button" id='buy-ticket' data-showing-id=${showing.id} >Buy Ticket</div>
       </div>`
 
@@ -82,22 +82,34 @@ document.addEventListener('DOMContentLoaded', function(){
       })
     })
     .then(resp => resp.json())
-    .then(updateDom(event))
+    .then(updateDom(showingId))
 
   }
 
-  function updateDom(event){
-    const oldRemaining = parseInt(event.target.parentElement.parentElement.parentElement.querySelector('#remaining').innerText)
-    const newRemaining = oldRemaining - 1
+  function updateDom(showingId){
+    let oldRemaining = document.querySelector(`#showing-id-${showingId}`)
+    // const oldRemaining = parseInt(event.target.parentElement.parentElement.parentElement.querySelector('#remaining').innerText)
+    const newRemaining = parseInt(oldRemaining.innerText) - 1
 
-    event.target.parentElement.parentElement.parentElement.querySelector('#remaining').innerText = newRemaining  + ' remaining tickets'
+    oldRemaining.innerText = newRemaining  + ' remaining tickets'
 
-    // div style is off here - think it's connected to the conditionals on lines 49-64
 
     if (newRemaining === 0) {
-      event.target.parentElement.innerHTML = `<div class="extra content">
-        SOLD OUT
-      </div>`
+
+      const extraContent = document.createElement('div')
+      extraContent.classList.add('extra')
+      extraContent.classList.add('content')
+      extraContent.innerHTML = 'SOLD OUT'
+
+      const cardDiv = showingsList.querySelector(`#extra-showing-id-${showingId}`)
+      cardDiv.querySelector('#buy-ticket').remove()
+
+      cardDiv.appendChild(extraContent)
+
+
+      // event.target.parentElement.innerHTML = `<div class="extra content">
+      //   SOLD OUT
+      // </div>`
     }
   }
 
