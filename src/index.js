@@ -58,12 +58,12 @@ function makeShowingCard(theatre){
 	newCard.querySelector(".extra").appendChild(buyTicketButton)
 	// debugger
 	if (parseInt(theatre.tickets_sold) === parseInt(theatre.capacity)){
-		buyTicketButton.innerHTML = "Sold Out"
+		buyTicketButton.parentElement.innerHTML = "Sold Out"
 	} else {
 		buyTicketButton.style.display = "block"
 	}
 	// 
-	// debugger
+	// debugger 
 	console.log("RIGHT BEFORE BUYTIKET")
 	let spanTix = document.querySelector(`.tix-${buyTicketButton.dataset.showingID}`)
 		console.log(spanTix)
