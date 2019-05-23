@@ -1,8 +1,7 @@
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', () => {
   const theatreId = 581;
   const GET_URL = 'https://evening-plateau-54365.herokuapp.com/theatres/581'
   const showingsList = document.querySelector('.showings')
-
 
   getShowings()
 
@@ -12,21 +11,22 @@ document.addEventListener('DOMContentLoaded', function(){
     .then(theater => theater.showings.forEach(makeCard))
   }
 
-  showingsList.addEventListener("click", function(event){
-      if (event.target.id === 'buy-ticket') {
-
-        const showingId = event.target.dataset.showingId
-        buyTicket(showingId, event)
+  // delegate event listener
+  showingsList.addEventListener("click", () => {
+    if (event.target.id === 'buy-ticket') {
+      const showingId = event.target.dataset.showingId
+      buyTicket(showingId)
     }
   })
 
+  // create card for each showing
   function makeCard(showing){
 
     const newCard = document.createElement('div')
     newCard.className = 'card'
+
     const capacity = parseInt(showing.capacity)
     const sold = parseInt(showing.tickets_sold)
-
     const remaining = capacity - sold
 
     newCard.innerHTML =
@@ -41,11 +41,11 @@ document.addEventListener('DOMContentLoaded', function(){
           <span class="ui label">
             ${showing.showtime}
           </span>
-
           <span id='showing-id-${showing.id}'>${remaining} remaining tickets
         </div>
       </div>`
 
+    // logic for button control
     if (remaining === 0) {
       const extra = document.createElement('div')
       extra.classList.add('extra')
@@ -55,21 +55,20 @@ document.addEventListener('DOMContentLoaded', function(){
       newCard.appendChild(extra)
 
     } else {
-      // div style is off here, but ran out of time to debug :(
 
       const buyBtn = document.createElement('div')
-      buyBtn.innerHTML = `
-      <div class="extra content" id=extra-showing-id-${showing.id}>
-        <div class="ui blue button" id='buy-ticket' data-showing-id=${showing.id} >Buy Ticket</div>
-      </div>`
+      buyBtn.classList.add('extra')
+      buyBtn.classList.add('content')
+      buyBtn.id = `extra-showing-id-${showing.id}`
+      buyBtn.innerHTML = `<div class="ui blue button" id='buy-ticket' data-showing-id=${showing.id} >Buy Ticket</div>`
 
       newCard.appendChild(buyBtn)
     }
 
     showingsList.appendChild(newCard)
   }
-
-  function buyTicket(showingId, event){
+  // when button clicked, update database
+  function buyTicket(showingId){
 
     fetch('https://evening-plateau-54365.herokuapp.com/tickets', {
       method: 'POST',
@@ -83,16 +82,17 @@ document.addEventListener('DOMContentLoaded', function(){
     })
     .then(resp => resp.json())
     .then(updateDom(showingId))
-
   }
 
+  // after successful database post, update dom
   function updateDom(showingId){
-    let oldRemaining = document.querySelector(`#showing-id-${showingId}`)
+    // laughably bad code I started with:
     // const oldRemaining = parseInt(event.target.parentElement.parentElement.parentElement.querySelector('#remaining').innerText)
+    
+    const oldRemaining = document.querySelector(`#showing-id-${showingId}`)
     const newRemaining = parseInt(oldRemaining.innerText) - 1
 
     oldRemaining.innerText = newRemaining  + ' remaining tickets'
-
 
     if (newRemaining === 0) {
 
@@ -105,12 +105,6 @@ document.addEventListener('DOMContentLoaded', function(){
       cardDiv.querySelector('#buy-ticket').remove()
 
       cardDiv.appendChild(extraContent)
-
-
-      // event.target.parentElement.innerHTML = `<div class="extra content">
-      //   SOLD OUT
-      // </div>`
     }
   }
-
 })
